@@ -1,235 +1,240 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Vehicle Tracking System - Login</title>
+  <title>Vehicle Tracking Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
+  <div class="max-w-7xl mx-auto p-4">
+    <h1 class="text-3xl font-bold text-center mb-6">🚚 Vehicle Tracking System</h1>
 
-<!-- Login Page -->
-<div id="loginPage" class="flex items-center justify-center h-screen">
-  <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
-    <h1 class="text-2xl font-bold text-center mb-4">🚚 VTS Login</h1>
-    <form id="loginForm" class="space-y-3">
-      <select id="role" class="border p-2 rounded w-full" required>
-        <option value="">-- Select Role --</option>
-        <option value="Gate">Gate</option>
-        <option value="Store">Store</option>
-      </select>
-      <input id="username" type="text" placeholder="Username" class="border p-2 rounded w-full" required>
-      <input id="password" type="password" placeholder="Password" class="border p-2 rounded w-full" required>
-      <button type="submit" class="bg-green-600 text-white px-4 py-2 w-full rounded">Login</button>
-    </form>
+    <!-- Action Buttons -->
+    <div class="flex justify-end space-x-4 mb-4">
+      <button onclick="openGateForm()" class="bg-green-600 text-white px-4 py-2 rounded">➕ Gate Entry</button>
+      <button onclick="openStore()" class="bg-blue-600 text-white px-4 py-2 rounded">🏭 Store</button>
+    </div>
+
+    <!-- Dashboard Table -->
+    <div class="overflow-x-auto bg-white shadow rounded-lg">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="bg-gray-200 text-left">
+            <th class="px-3 py-2 border">Vehicle No</th>
+            <th class="px-3 py-2 border">Driver</th>
+            <th class="px-3 py-2 border">Mobile</th>
+            <th class="px-3 py-2 border">Supplier</th>
+            <th class="px-3 py-2 border">Purpose</th>
+            <th class="px-3 py-2 border">Status</th>
+            <th class="px-3 py-2 border">Dock</th>
+            <th class="px-3 py-2 border">Gate In</th>
+            <th class="px-3 py-2 border">Gate Out</th>
+          </tr>
+        </thead>
+        <tbody id="dashboardTable"></tbody>
+      </table>
+    </div>
   </div>
-</div>
 
-<!-- Dashboard -->
-<div id="dashboardPage" class="hidden max-w-7xl mx-auto p-4">
-  <div class="flex justify-between items-center mb-4">
-    <h1 class="text-3xl font-bold">🚚 Vehicle Tracking Dashboard</h1>
-    <button onclick="logout()" class="bg-red-500 text-white px-3 py-1 rounded">Logout</button>
+  <!-- Modal: Gate Form -->
+  <div id="gateModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+      <h2 class="text-xl font-semibold mb-4">🚪 Vehicle Gate Entry</h2>
+      <form id="gateForm" class="space-y-3">
+        <input id="vehicleNo" type="text" placeholder="Vehicle Number" class="border p-2 rounded w-full" required>
+        <input id="driverName" type="text" placeholder="Driver Name" class="border p-2 rounded w-full" required>
+        <input id="driverMobile" type="text" placeholder="Driver Mobile" class="border p-2 rounded w-full" required>
+        <input id="supplier" type="text" placeholder="Supplier Name" class="border p-2 rounded w-full">
+        <select id="purpose" class="border p-2 rounded w-full" required>
+          <option value="">-- Select Purpose --</option>
+          <option value="Loading">Loading</option>
+          <option value="Unloading">Unloading</option>
+          <option value="Maintenance">Maintenance</option>
+          <option value="Visitor">Visitor</option>
+          <option value="Other">Other</option>
+        </select>
+        <div class="flex justify-end space-x-2">
+          <button type="button" onclick="closeGateForm()" class="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
+          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Save</button>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <!-- Role-based Buttons -->
-  <div class="flex justify-end space-x-4 mb-4">
-    <button id="gateBtn" onclick="openGateForm()" class="hidden bg-green-600 text-white px-4 py-2 rounded">➕ Gate Entry</button>
-    <button id="storeBtn" onclick="openStoreForm()" class="hidden bg-blue-600 text-white px-4 py-2 rounded">🏭 Store</button>
-  </div>
-
-  <!-- Dashboard Table -->
-  <div class="overflow-x-auto bg-white shadow rounded-lg">
-    <table class="w-full border-collapse">
-      <thead>
-        <tr class="bg-gray-200 text-left">
-          <th class="px-3 py-2 border">Vehicle No</th>
-          <th class="px-3 py-2 border">Driver</th>
-          <th class="px-3 py-2 border">Mobile</th>
-          <th class="px-3 py-2 border">Supplier</th>
-          <th class="px-3 py-2 border">Purpose</th>
-          <th class="px-3 py-2 border">Status</th>
-          <th class="px-3 py-2 border">Dock</th>
-          <th class="px-3 py-2 border">Gate In</th>
-          <th class="px-3 py-2 border">Gate Out</th>
-        </tr>
-      </thead>
-      <tbody id="dashboardTable"></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- Gate Form Modal -->
-<div id="gateModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
-  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
-    <h2 class="text-xl font-semibold mb-4">🚪 Vehicle Gate Entry</h2>
-    <form id="gateForm" class="space-y-3">
-      <input id="vehicleNo" type="text" placeholder="Vehicle Number" class="border p-2 rounded w-full" required>
-      <input id="driverName" type="text" placeholder="Driver Name" class="border p-2 rounded w-full" required>
-      <input id="driverMobile" type="text" placeholder="Driver Mobile" class="border p-2 rounded w-full" required>
-      <input id="supplier" type="text" placeholder="Supplier Name" class="border p-2 rounded w-full">
-      <select id="purpose" class="border p-2 rounded w-full" required>
-        <option value="">-- Select Purpose --</option>
-        <option value="Loading">Loading</option>
-        <option value="Unloading">Unloading</option>
-        <option value="Maintenance">Maintenance</option>
-        <option value="Visitor">Visitor</option>
-        <option value="Other">Other</option>
-      </select>
-      <div class="flex justify-end space-x-2">
-        <button type="button" onclick="closeGateForm()" class="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
-        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Save</button>
+  <!-- Modal: Store -->
+  <div id="storeModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl">
+      <h2 class="text-xl font-semibold mb-4">🏭 Store Operations</h2>
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="bg-gray-200">
+            <th class="px-3 py-2 border">Vehicle No</th>
+            <th class="px-3 py-2 border">Driver</th>
+            <th class="px-3 py-2 border">Dock</th>
+            <th class="px-3 py-2 border">Operation</th>
+            <th class="px-3 py-2 border">Action</th>
+          </tr>
+        </thead>
+        <tbody id="storeTable"></tbody>
+      </table>
+      <div class="flex justify-end mt-4">
+        <button onclick="closeStore()" class="bg-gray-400 text-white px-4 py-2 rounded">Close</button>
       </div>
-    </form>
+    </div>
   </div>
-</div>
 
-<!-- Store Form Modal -->
-<div id="storeModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
-  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
-    <h2 class="text-xl font-semibold mb-4">🏭 Store Dock Assignment</h2>
-    <form id="storeForm" class="space-y-3">
-      <input id="storeVehicleNo" type="text" placeholder="Vehicle Number" class="border p-2 rounded w-full" required>
-      <select id="dock" class="border p-2 rounded w-full">
-        <option value="">-- Select Dock --</option>
-        <option value="Dock 1">Dock 1</option>
-        <option value="Dock 2">Dock 2</option>
-        <option value="Dock 3">Dock 3</option>
-      </select>
-      <select id="statusUpdate" class="border p-2 rounded w-full">
-        <option value="Dock">At Dock</option>
-        <option value="Exited">Exit</option>
-      </select>
-      <div class="flex justify-end space-x-2">
-        <button type="button" onclick="closeStoreForm()" class="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Update</button>
-      </div>
-    </form>
-  </div>
-</div>
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, updateDoc, doc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
-<!-- Firebase -->
-<script type="module">
-  // Firebase core
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxzNeMBXn3glNwJuEH_XpeYqz7nI7fzqw",
+      authDomain: "vts-system-750f7.firebaseapp.com",
+      projectId: "vts-system-750f7",
+      storageBucket: "vts-system-750f7.firebasestorage.app",
+      messagingSenderId: "444449653384",
+      appId: "1:444449653384:web:d5e1d4f56c8e182cc8d53d",
+      measurementId: "G-TX3ZFD2HBW"
+    };
 
-  // Firestore imports
-  import { getFirestore, collection, addDoc, onSnapshot, query, where, getDocs, updateDoc, doc } 
-    from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  // Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyDxzNeMBXn3glNwJuEH_XpeYqz7nI7fzqw",
-    authDomain: "vts-system-750f7.firebaseapp.com",
-    projectId: "vts-system-750f7",
-    storageBucket: "vts-system-750f7.firebasestorage.app",
-    messagingSenderId: "444449653384",
-    appId: "1:444449653384:web:d5e1d4f56c8e182cc8d53d",
-    measurementId: "G-TX3ZFD2HBW"
-  };
+    // Dashboard
+    const dashboardTable = document.getElementById("dashboardTable");
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+    onSnapshot(collection(db, "vehicles"), (snapshot) => {
+      dashboardTable.innerHTML = "";
+      snapshot.forEach((docSnap) => {
+        const v = docSnap.data();
+        const rowColor =
+          v.status === "Inside" ? "bg-green-100" :
+          v.status === "Exited" ? "bg-red-100" :
+          v.status === "Dock" ? "bg-yellow-100" : "";
 
-  // Initialize Firestore
-  const db = getFirestore(app);
-
-  // Now db can be used for adding/updating/retrieving vehicle data
-</script>
-
-
-  // Login
-  document.getElementById("loginForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const role = document.getElementById("role").value;
-    const pass = document.getElementById("password").value;
-    if ((role === "Gate" && pass === "gate123") || (role === "Store" && pass === "store123")) {
-      currentRole = role;
-      document.getElementById("loginPage").classList.add("hidden");
-      document.getElementById("dashboardPage").classList.remove("hidden");
-      if(role==="Gate") document.getElementById("gateBtn").classList.remove("hidden");
-      if(role==="Store") document.getElementById("storeBtn").classList.remove("hidden");
-    } else alert("Invalid login");
-  });
-
-  // Logout
-  window.logout = () => location.reload();
-
-  // Live Dashboard
-  const dashboardTable = document.getElementById("dashboardTable");
-  onSnapshot(collection(db, "vehicles"), (snapshot) => {
-    dashboardTable.innerHTML = "";
-    snapshot.forEach(docSnap => {
-      const v = docSnap.data();
-      const rowColor =
-        v.status==="Inside"?"bg-green-100":
-        v.status==="Exited"?"bg-red-100":
-        v.status==="Dock"?"bg-yellow-100":"";
-      dashboardTable.innerHTML += `
-        <tr class="${rowColor}">
-          <td class="border px-3 py-2">${v.vehicleNo}</td>
-          <td class="border px-3 py-2">${v.driverName}</td>
-          <td class="border px-3 py-2">${v.driverMobile}</td>
-          <td class="border px-3 py-2">${v.supplier}</td>
-          <td class="border px-3 py-2">${v.purpose}</td>
-          <td class="border px-3 py-2">${v.status}</td>
-          <td class="border px-3 py-2">${v.dock||""}</td>
-          <td class="border px-3 py-2">${v.gateInTime}</td>
-          <td class="border px-3 py-2">${v.gateOutTime||""}</td>
-        </tr>`;
-    });
-  });
-
-  // Gate Form
-  window.openGateForm = () => document.getElementById("gateModal").classList.remove("hidden");
-  window.closeGateForm = () => document.getElementById("gateModal").classList.add("hidden");
-
-  document.getElementById("gateForm").addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    const vehicleNo=document.getElementById("vehicleNo").value;
-    const driverName=document.getElementById("driverName").value;
-    const driverMobile=document.getElementById("driverMobile").value;
-    const supplier=document.getElementById("supplier").value;
-    const purpose=document.getElementById("purpose").value;
-
-    const q=query(collection(db,"vehicles"),where("vehicleNo","==",vehicleNo),where("status","==","Inside"));
-    const existing = await getDocs(q);
-    if(!existing.empty){ alert("Vehicle already inside!"); return; }
-
-    await addDoc(collection(db,"vehicles"),{
-      vehicleNo, driverName, driverMobile, supplier, purpose,
-      status:"Inside", dock:"", gateInTime:new Date().toLocaleString(), gateOutTime:""
-    });
-    document.getElementById("gateForm").reset();
-    closeGateForm();
-  });
-
-  // Store Form
-  window.openStoreForm = () => document.getElementById("storeModal").classList.remove("hidden");
-  window.closeStoreForm = () => document.getElementById("storeModal").classList.add("hidden");
-
-  document.getElementById("storeForm").addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    const vehicleNo=document.getElementById("storeVehicleNo").value;
-    const dock=document.getElementById("dock").value;
-    const statusUpdate=document.getElementById("statusUpdate").value;
-
-    const q=query(collection(db,"vehicles"),where("vehicleNo","==",vehicleNo),where("status","!=","Exited"));
-    const snapshot=await getDocs(q);
-    if(snapshot.empty){ alert("Vehicle not found or already exited."); return; }
-
-    snapshot.forEach(async docSnap=>{
-      const ref=doc(db,"vehicles",docSnap.id);
-      await updateDoc(ref,{
-        dock, status:statusUpdate,
-        gateOutTime:statusUpdate==="Exited"?new Date().toLocaleString():""
+        dashboardTable.innerHTML += `
+          <tr class="${rowColor}">
+            <td class="border px-3 py-2">${v.vehicleNo}</td>
+            <td class="border px-3 py-2">${v.driverName}</td>
+            <td class="border px-3 py-2">${v.driverMobile}</td>
+            <td class="border px-3 py-2">${v.supplier}</td>
+            <td class="border px-3 py-2">${v.purpose}</td>
+            <td class="border px-3 py-2">${v.status}</td>
+            <td class="border px-3 py-2">${v.dock || ""}</td>
+            <td class="border px-3 py-2">${v.gateInTime}</td>
+            <td class="border px-3 py-2">${v.gateOutTime || ""}</td>
+          </tr>`;
       });
     });
-    document.getElementById("storeForm").reset();
-    closeStoreForm();
-  });
-</script>
+
+    // Gate Form Modal
+    window.openGateForm = () => document.getElementById("gateModal").classList.remove("hidden");
+    window.closeGateForm = () => document.getElementById("gateModal").classList.add("hidden");
+
+    // Save Vehicle Entry (no duplicates)
+    const gateForm = document.getElementById("gateForm");
+    gateForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const vehicleNo = document.getElementById("vehicleNo").value.trim().toUpperCase();
+      const driverName = document.getElementById("driverName").value;
+      const driverMobile = document.getElementById("driverMobile").value;
+      const supplier = document.getElementById("supplier").value;
+      const purpose = document.getElementById("purpose").value;
+
+      // Check duplicates
+      const q = query(collection(db, "vehicles"), where("vehicleNo", "==", vehicleNo), where("status", "==", "Inside"));
+      const existing = await getDocs(q);
+      if (!existing.empty) {
+        alert("❌ Vehicle already inside premises!");
+        return;
+      }
+
+      await addDoc(collection(db, "vehicles"), {
+        vehicleNo,
+        driverName,
+        driverMobile,
+        supplier,
+        purpose,
+        status: "Inside",
+        dock: "",
+        gateInTime: new Date().toLocaleString(),
+        gateOutTime: ""
+      });
+
+      gateForm.reset();
+      closeGateForm();
+    });
+
+    // Store Modal
+    window.openStore = () => {
+      document.getElementById("storeModal").classList.remove("hidden");
+      loadStoreTable();
+    };
+    window.closeStore = () => document.getElementById("storeModal").classList.add("hidden");
+
+    async function loadStoreTable() {
+      const storeTable = document.getElementById("storeTable");
+      storeTable.innerHTML = "";
+
+      onSnapshot(query(collection(db, "vehicles"), where("status", "==", "Inside")), (snapshot) => {
+        storeTable.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+          const v = docSnap.data();
+          const id = docSnap.id;
+
+          storeTable.innerHTML += `
+            <tr>
+              <td class="border px-3 py-2">${v.vehicleNo}</td>
+              <td class="border px-3 py-2">${v.driverName}</td>
+              <td class="border px-3 py-2">
+                <select onchange="assignDock('${id}', this.value)" class="border p-1 rounded">
+                  <option value="">--Select--</option>
+                  <option value="Dock 1">Dock 1</option>
+                  <option value="Dock 2">Dock 2</option>
+                  <option value="Dock 3">Dock 3</option>
+                </select>
+              </td>
+              <td class="border px-3 py-2">
+                <select onchange="updatePurpose('${id}', this.value)" class="border p-1 rounded">
+                  <option value="">--Select--</option>
+                  <option value="Loading">Loading</option>
+                  <option value="Unloading">Unloading</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </td>
+              <td class="border px-3 py-2">
+                <button onclick="gateOut('${id}')" class="bg-red-500 text-white px-2 py-1 rounded">Gate Out</button>
+              </td>
+            </tr>`;
+        });
+      });
+    }
+
+    // Assign Dock
+    window.assignDock = async (id, dockNo) => {
+      const ref = doc(db, "vehicles", id);
+      await updateDoc(ref, { dock: dockNo, status: "Dock" });
+    };
+
+    // Update Purpose
+    window.updatePurpose = async (id, purpose) => {
+      const ref = doc(db, "vehicles", id);
+      await updateDoc(ref, { purpose });
+    };
+
+    // Gate Out
+    window.gateOut = async (id) => {
+      const ref = doc(db, "vehicles", id);
+      await updateDoc(ref, {
+        status: "Exited",
+        gateOutTime: new Date().toLocaleString()
+      });
+    };
+  </script>
 </body>
 </html>
